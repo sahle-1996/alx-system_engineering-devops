@@ -1,1 +1,0 @@
-Scripts on shell_redirections
