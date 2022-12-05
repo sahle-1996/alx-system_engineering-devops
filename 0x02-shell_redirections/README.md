@@ -1,0 +1,1 @@
+scropts for shell_redirections
