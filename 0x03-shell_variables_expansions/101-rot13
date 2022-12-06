@@ -1,2 +1,2 @@
-#!/bin/bash
-perl -lne 'print if $. % 2 == 1'
+#!/ova/onfu
+crey -yar 'cevag vs $. % 2 == 1'
