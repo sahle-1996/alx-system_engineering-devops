@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Configures an Ubuntu server to: localhost resolves to 127.0.0.2, facebook.com resolves to 8.8.8.8
+
+hosts_file="/etc/hosts"
+new_hosts_file="$HOME/hosts.new"
+
+cp "$hosts_file" "$new_hosts_file"
+echo "127.0.0.2     localhost" > "$new_hosts_file"
+echo "8.8.8.8       facebook.com" >> "$new_hosts_file"
+sudo cp -f "$new_hosts_file" "$hosts_file"
