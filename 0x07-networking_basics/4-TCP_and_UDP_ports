@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Displays listening sockets with the PID and name of the program to which each socket belongs
+
+# Use sudo to ensure that netstat displays PID and program names
+sudo netstat -tulnep
