@@ -1,0 +1,7 @@
+# SSH client configuration for key-based authentication without password prompt
+Host *
+    IdentityFile ~/.ssh/school
+    PasswordAuthentication no
+    StrictHostKeyChecking ask
+    ForwardAgent yes
+    Compression yes
