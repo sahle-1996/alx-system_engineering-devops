@@ -1,0 +1,4 @@
+#!/bin/bash
+# Script to SSH into a server using ~/.ssh/school private key and user ubuntu
+
+ssh -i ~/.ssh/school -o User=ubuntu 100.25.19.204
