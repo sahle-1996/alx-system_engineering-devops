@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Bash script to install and configure nginx on Ubuntu
+
+# Update package list and install nginx
+apt-get update
+apt-get -y install nginx
+
+# Allow HTTP traffic through firewall
+ufw allow 'Nginx HTTP'
+
+# Create index.html with "Hello World!" in /var/www/html/
+echo "Hello World!" > /var/www/html/index.html
+
+# Start nginx without using systemctl
+/etc/init.d/nginx start
