@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Bash script to configure nginx for redirection on Ubuntu
+
+# Install nginx
+apt-get update
+apt-get -y install nginx
+
+# Create index.html with "Hello World!" in /var/www/html/
+echo "Hello World!" | tee /var/www/html/index.html > /dev/null
+
+# Configure redirection
+cat << EOF > /etc/nginx/sites-available/default
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm;
+
+    server_name _;
+
+    location /redirect_me {
+        rewrite ^ https://www.blog.ehoneahobed.com permanent;
+    }
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}
+EOF
+
+# Enable the redirection site configuration
+ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# Restart nginx to apply changes
+/etc/init.d/nginx restart
