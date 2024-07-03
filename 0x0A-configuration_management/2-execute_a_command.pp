@@ -1,6 +1,6 @@
 # Terminate the 'killmenow' process
 
-exec { 'terminate-process':
-  command  => 'pkill -f killmenow',
-  path     => '/usr/bin:/bin',
+exec { 'terminate_killmenow':
+  command => '/usr/bin/pkill killmenow',
+  path    => ['/usr/bin', '/bin'],
 }
