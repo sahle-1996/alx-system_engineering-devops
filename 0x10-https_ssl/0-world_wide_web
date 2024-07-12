@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Setting up and verifying DNS details
+
+# Function to show subdomain details
+show_details() {
+    local domain_name="$1"
+    local sub_name="$2"
+    local ip_address=$(dig +short $sub_name.$domain_name)
+    local type_record=$(dig $sub_name.$domain_name | awk '/^;; ANSWER SECTION:$/ { getline; print $4 }')
+
+    echo "Subdomain $sub_name has a $type_record record pointing to $ip_address"
+}
+
+# Main script execution
+domain_name="$1"
+sub_name="$2"
+
+if [ -z "$sub_name" ]; then
+    show_details "$domain_name" www
+    show_details "$domain_name" lb-01
+    show_details "$domain_name" web-01
+    show_details "$domain_name" web-02
+else
+    show_details "$domain_name" "$sub_name"
+fi
