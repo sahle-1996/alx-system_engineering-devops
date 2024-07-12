@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Setting up SSL termination and certificates
+# Setting up SSL termination and certificate handling
 
-frontend ssl_frontend
+frontend https_frontend
         bind *:80
         bind *:443 ssl crt /etc/letsencrypt/live/www.byteangel.tech/fullchain.pem
         http-request set-header X-Forwarded-Proto https
-        default_backend web_servers
+        default_backend backend_servers
 
-backend web_servers
+backend backend_servers
         balance roundrobin
-        server server1 54.237.9.122:80 check
-        server server2 100.26.250.59:80 check
+        server web_server_1 54.237.9.122:80 check
+        server web_server_2 100.26.250.59:80 check
