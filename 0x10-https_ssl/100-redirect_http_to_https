@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Setting up HTTP to HTTPS redirection and SSL termination
+
+frontend http_frontend
+        mode http
+        bind *:80
+        bind *:443 ssl crt /etc/letsencrypt/live/www.byteangel.tech/fullchain.pem
+        http-request redirect scheme https unless { ssl_fc }
+        http-request set-header X-Forwarded-Proto https if { ssl_fc }
+        http-request set-header X-Forwarded-Proto http unless { ssl_fc }
+        default_backend web_backend
+
+backend web_backend
+        mode http
+        balance roundrobin
+        server web01 54.237.9.122:80 check
+        server web02 100.26.250.59:80 check
