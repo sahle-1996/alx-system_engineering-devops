@@ -1,0 +1,12 @@
+#!/bin/bash
+# Create a backup and compress all databases
+
+# Define date variables
+current_date=$(date +"%Y-%m-%d")
+archive_name="backup_$current_date.tar.gz"
+
+# Perform the database dump
+mysqldump --all-databases -u root --password="$1" > db_backup.sql
+
+# Compress the backup file
+gzip -c db_backup.sql > "$archive_name"

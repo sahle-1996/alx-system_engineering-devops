@@ -1,0 +1,21 @@
+#
+# Configuration file for MySQL database server.
+#
+
+[mysqld]
+pid-file        = /run/mysqld/mysql.pid
+socket          = /run/mysqld/mysql.sock
+datadir         = /data/mysql
+log-error       = /logs/mysql/error.log
+# Allow connections from any IP address
+bind-address    = 0.0.0.0
+# Disable symbolic links for enhanced security
+symbolic-links  = 0
+# Set a unique server ID for replication
+server-id       = 3
+# Path for binary log files
+log_bin         = /logs/mysql/bin-log.log
+# Specify the database to replicate
+binlog_do_db    = tyrell_corp
+# Location for the relay log in replication
+relay-log       = /logs/mysql/relay-log.log
