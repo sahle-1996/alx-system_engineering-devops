@@ -1,50 +1,50 @@
 #!/usr/bin/python3
-"""Module with functions for Reddit API interaction."""
+"""Module for counting keyword occurrences in Reddit hot posts."""
 
 import requests
+from collections import defaultdict
+import re
 
 
-def print_sorted_histogram(histogram=None):
-    """Sorts and prints the given histogram."""
+def print_sorted_histogram(histogram):
+    """Prints the histogram sorted by count and alphabetically."""
+    if not histogram:
+        return
+
+    sorted_histogram = sorted(histogram.items(), key=lambda item: (-item[1], item[0]))
+    for word, count in sorted_histogram:
+        print(f"{word}: {count}")
+
+
+def count_words(subreddit, word_list, after=None, histogram=None):
+    """Recursively counts keyword occurrences in hot posts of a subreddit."""
     if histogram is None:
-        histogram = []
+        histogram = defaultdict(int)
 
-    histogram = [item for item in histogram if item[1]]
-    histogram_dict = {}
-    for key, value in histogram:
-        histogram_dict[key] = histogram_dict.get(key, 0) + value
-
-    sorted_histogram = sorted(histogram_dict.items(), key=lambda kv: (kv[1], kv[0]), reverse=True)
-    result_str = '\n'.join(f'{key}: {value}' for key, value in sorted_histogram)
-
-    if result_str:
-        print(result_str)
-
-
-def count_word_occurrences(subreddit, words, histogram=None, count=0, after=None):
-    """Counts occurrences of words in a subreddit and prints the histogram."""
-    if histogram is None:
-        histogram = [(word.lower(), 0) for word in words]
+    if not isinstance(subreddit, str) or not subreddit:
+        return
 
     headers = {
-        'Accept': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36 Edg/97.0.1072.62'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
-    url = f'https://www.reddit.com/r/{subreddit}/hot.json?limit=30&count={count}&after={after or ""}'
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+    params = {'after': after, 'limit': 100}
     
-    response = requests.get(url, headers=headers, allow_redirects=False)
+    response = requests.get(url, headers=headers, params=params, allow_redirects=False)
 
-    if response.status_code == 200:
-        data = response.json().get('data', {})
-        posts = data.get('children', [])
-        titles = [post['data']['title'] for post in posts]
-
-        histogram = [(word, count + sum(title.lower().split().count(word) for title in titles))
-                     for word, count in histogram]
-
-        if len(posts) == 30 and data.get('after'):
-            count_word_occurrences(subreddit, words, histogram, count + len(posts), data['after'])
-        else:
-            print_sorted_histogram(histogram)
-    else:
+    if response.status_code != 200:
         return
+
+    data = response.json().get('data', {})
+    posts = data.get('children', [])
+    after = data.get('after', None)
+
+    titles = [post['data']['title'].lower() for post in posts]
+    for word in word_list:
+        pattern = re.compile(r'\b{}\b'.format(re.escape(word.lower())), re.IGNORECASE)
+        histogram[word.lower()] += sum(title.count(word.lower()) for title in titles)
+
+    if after:
+        count_words(subreddit, word_list, after, histogram)
+    else:
+        print_sorted_histogram(histogram) 
