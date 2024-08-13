@@ -1,18 +1,19 @@
 #!/usr/bin/python3
-"""Module for retrieving top 10 hot posts from a subreddit."""
+"""Module to fetch and display top 10 hot posts from a subreddit."""
+import requests
 
 
-def fetch_top_ten(subreddit):
-    """Fetches and prints the top 10 hot posts of a subreddit."""
-    import requests
+def display_top_ten(subreddit):
+    """Displays the titles of the top 10 hot posts on a given subreddit."""
+    api_url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
+    request_headers = {"User-Agent": "custom-agent:v1.0"}
+    query_params = {"limit": 10}
 
-    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
-    headers = {"User-Agent": "custom-agent:v1.0 (by /u/your_username)"}
-    
-    response = requests.get(url, headers=headers, allow_redirects=False)
+    response = requests.get(api_url, headers=request_headers,
+                            params=query_params, allow_redirects=False)
 
     if response.status_code != 200:
-        print(None)
+        print("None")
         return
 
     posts = response.json().get("data", {}).get("children", [])
