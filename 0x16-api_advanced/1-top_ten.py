@@ -1,24 +1,16 @@
 #!/usr/bin/python3
-"""Module to print the titles of the top 10 hot posts from a subreddit."""
-
-import requests
+"""Module to fetch subreddit subscribers."""
 
 
-def top_ten(subreddit):
-    """Prints the titles of the top 10 hot posts for a given subreddit."""
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
-    headers = {"User-Agent": "CustomAgent/1.0"}
-    params = {"limit": 10}
+def fetch_subscriber_count(subreddit):
+    """Fetches the number of subscribers for a given subreddit."""
+    import requests
 
-    response = requests.get(url, headers=headers, params=params, allow_redirects=False)
+    url = f"https://www.reddit.com/r/{subreddit}/about.json"
+    headers = {"User-Agent": "Custom-Agent"}
+    response = requests.get(url, headers=headers, allow_redirects=False)
 
-    if response.status_code == 404:
-        print("None")
-        return
+    if response.status_code != 200:
+        return 0
 
-    data = response.json().get("data", {})
-    posts = data.get("children", [])
-
-    for post in posts:
-        title = post.get("data", {}).get("title", "")
-        print(title)
+    return response.json().get("data", {}).get("subscribers", 0)
