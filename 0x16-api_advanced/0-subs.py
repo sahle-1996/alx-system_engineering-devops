@@ -1,24 +1,16 @@
 #!/usr/bin/python3
-"""
-Module to get the subscriber count of a subreddit.
-"""
-
-import requests
+"""Module to fetch subreddit subscribers."""
 
 
-def get_subscribers(subreddit):
+def fetch_subscriber_count(subreddit):
     """Fetches the number of subscribers for a given subreddit."""
-    if not subreddit or not isinstance(subreddit, str):
-        return 0
+    import requests
 
-    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
-    headers = {
-        'User-Agent': 'reddit-subscriber-checker:v1.0 (by /u/firdaus_cartoon_jr)'
-    }
+    url = f"https://www.reddit.com/r/{subreddit}/about.json"
+    headers = {"User-Agent": "Custom-Agent"}
+    response = requests.get(url, headers=headers, allow_redirects=False)
 
-    response = requests.get(url, headers=headers)
     if response.status_code != 200:
         return 0
 
-    data = response.json().get("data", {})
-    return data.get("subscribers", 0)
+    return response.json().get("data", {}).get("subscribers", 0)
