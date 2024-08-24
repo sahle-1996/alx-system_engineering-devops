@@ -1,0 +1,25 @@
+server {
+    listen 80;
+    location /static_hbnb { alias /data/web_static/current/; }
+    listen [::]:80;
+    root /var/www/html;
+    index index.nginx-debian.html index.htm index.html;
+    server_name _;
+    add_header X-Host-Server $hostname;
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    location /onepage-airbnb {
+        proxy_pass http://0.0.0.0:5000/airbnb-onepage;
+    }
+    location ~ ^/dynamic-airbnb/number_is_odd_or_even/([0-9]+)$ {
+        proxy_pass http://0.0.0.0:5001/number_odd_or_even/$1;
+    }
+    if ($request_filename ~ reroute_me) {
+        rewrite ^ https://th3-gr00t.tk/ permanent;
+    }
+    error_page 404 /custom_404.html;
+    location = /custom_404.html {
+        internal;
+    }
+}
