@@ -1,0 +1,28 @@
+server {
+    listen 80;
+    listen [::]:80 default_server;
+    add_header X-Origin-Server $hostname;
+    root /etc/nginx/html;
+    index index.htm index.html;
+    
+    location /go_to_youtube {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+    
+    root /var/www/html;
+    server_name _;
+
+    location /airbnb {
+        proxy_pass http://0.0.0.0:5000/airbnb-onepage;
+    }
+
+    location /static_files {
+        alias /data/web_static/current/;
+    }
+
+    location / {
+        # First check if the file exists, then check for a directory,
+        # otherwise, return a 404 error.
+        try_files $uri $uri/ =404;
+    }
+}
